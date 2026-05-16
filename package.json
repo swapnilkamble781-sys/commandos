@@ -1,0 +1,39 @@
+{
+  "name": "commandos",
+  "version": "0.1.0",
+  "description": "A Mac voice-command AI operator prototype for Chrome, Figma, email, and automation workflows.",
+  "main": "electron/main.js",
+  "private": true,
+  "scripts": {
+    "dev": "electron .",
+    "dist:mac": "electron-builder --mac zip dmg --publish never"
+  },
+  "dependencies": {
+    "electron": "^31.7.7"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.commandos.voiceagent",
+    "productName": "CommandOS",
+    "files": [
+      "electron/**/*",
+      "mac-voice-agent/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        "zip",
+        "dmg"
+      ],
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "CommandOS uses the microphone to turn your voice commands into task plans.",
+        "NSAppleEventsUsageDescription": "CommandOS can ask permission to automate apps like Chrome, Figma, and Mail."
+      }
+    }
+  }
+}
