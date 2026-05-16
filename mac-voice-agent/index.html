@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CommandOS Voice Agent</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="mark">C</div>
+          <div>
+            <p class="eyebrow">Mac voice operator</p>
+            <h1>CommandOS</h1>
+          </div>
+        </div>
+
+        <section class="status-panel">
+          <div class="status-dot" id="statusDot"></div>
+          <div>
+            <p class="label">Assistant state</p>
+            <strong id="statusText">Ready</strong>
+          </div>
+        </section>
+
+        <nav class="nav-list" aria-label="Agent modes">
+          <button class="nav-item active" data-mode="overview">Overview</button>
+          <button class="nav-item" data-mode="browser">Chrome</button>
+          <button class="nav-item" data-mode="figma">Figma</button>
+          <button class="nav-item" data-mode="mail">Email</button>
+          <button class="nav-item" data-mode="automation">Automation</button>
+        </nav>
+
+        <section class="permission-box">
+          <p class="label">Native permissions needed</p>
+          <ul>
+            <li>Microphone</li>
+            <li>Accessibility control</li>
+            <li>Chrome automation</li>
+            <li>Gmail / Apple Mail OAuth</li>
+            <li>Figma API token</li>
+          </ul>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Speak naturally in Hindi, English, or mixed</p>
+            <h2>Your AI command cockpit</h2>
+          </div>
+          <button class="icon-button" id="clearBtn" title="Clear session" aria-label="Clear session">
+            <span>↺</span>
+          </button>
+        </header>
+
+        <section class="command-panel">
+          <div class="voice-orb" id="voiceOrb">
+            <div class="pulse"></div>
+            <button id="listenBtn" aria-label="Start listening">
+              <span id="micIcon">●</span>
+              <strong>Talk</strong>
+            </button>
+          </div>
+
+          <div class="input-stack">
+            <label for="commandInput">Command</label>
+            <textarea
+              id="commandInput"
+              rows="4"
+              placeholder="Example: Chrome me open karo figma.com aur ek AI dashboard design banao, phir Gmail me unread mail summarize karo"
+            ></textarea>
+            <div class="action-row">
+              <button class="primary" id="runBtn">Plan task</button>
+              <button class="secondary" id="demoBtn">Try demo</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="grid">
+          <article class="panel transcript-panel">
+            <div class="panel-head">
+              <h3>Live Transcript</h3>
+              <span id="languageBadge">Auto</span>
+            </div>
+            <p id="transcript">No command yet.</p>
+          </article>
+
+          <article class="panel intent-panel">
+            <div class="panel-head">
+              <h3>Detected Intent</h3>
+              <span id="confidenceBadge">0%</span>
+            </div>
+            <div id="intentChips" class="chips"></div>
+          </article>
+        </section>
+
+        <section class="panel plan-panel">
+          <div class="panel-head">
+            <h3>Execution Plan</h3>
+            <button class="secondary small" id="confirmBtn" disabled>Confirm safe steps</button>
+          </div>
+          <ol id="planList" class="plan-list">
+            <li>Speak or type a task to generate an execution plan.</li>
+          </ol>
+        </section>
+
+        <section class="tool-grid">
+          <article class="tool-panel" data-tool="browser">
+            <div class="tool-icon">⌘</div>
+            <h3>Chrome Operator</h3>
+            <p>Open pages, click elements, download files, fill forms, and report what changed.</p>
+            <pre id="browserScript">Waiting for a browser task...</pre>
+          </article>
+
+          <article class="tool-panel" data-tool="figma">
+            <div class="tool-icon">F</div>
+            <h3>Figma Designer</h3>
+            <p>Create frames, design systems, flows, dashboards, landing pages, and diagrams.</p>
+            <pre id="figmaBrief">Waiting for a design task...</pre>
+          </article>
+
+          <article class="tool-panel" data-tool="mail">
+            <div class="tool-icon">@</div>
+            <h3>Email Pilot</h3>
+            <p>Read unread mail, summarize threads, draft replies, and ask before sending.</p>
+            <pre id="mailDraft">Waiting for an email task...</pre>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
