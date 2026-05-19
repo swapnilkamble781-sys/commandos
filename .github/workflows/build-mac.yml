@@ -14,21 +14,67 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+      - name: Build one-click macOS app bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP="dist/CommandOS.app"
+          mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
+          cp -R mac-voice-agent "$APP/Contents/Resources/mac-voice-agent"
 
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
+          cat > "$APP/Contents/Info.plist" <<'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>CFBundleExecutable</key>
+            <string>CommandOS</string>
+            <key>CFBundleIdentifier</key>
+            <string>com.commandos.voiceagent</string>
+            <key>CFBundleName</key>
+            <string>CommandOS</string>
+            <key>CFBundleDisplayName</key>
+            <string>CommandOS</string>
+            <key>CFBundlePackageType</key>
+            <string>APPL</string>
+            <key>CFBundleShortVersionString</key>
+            <string>0.1.0</string>
+            <key>CFBundleVersion</key>
+            <string>1</string>
+            <key>LSMinimumSystemVersion</key>
+            <string>11.0</string>
+          </dict>
+          </plist>
+          PLIST
 
-      - name: Build macOS app
-        run: npm run dist:mac
+          cat > "$APP/Contents/MacOS/CommandOS" <<'SCRIPT'
+          #!/bin/bash
+          set -euo pipefail
+
+          APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+          WEB_DIR="$APP_DIR/Resources/mac-voice-agent"
+          PORT="4173"
+          URL="http://127.0.0.1:$PORT"
+
+          if ! /usr/sbin/lsof -ti tcp:$PORT >/dev/null 2>&1; then
+            cd "$WEB_DIR"
+            /usr/bin/python3 -m http.server "$PORT" >/tmp/commandos-server.log 2>&1 &
+          fi
+
+          sleep 1
+
+          if [ -d "/Applications/Google Chrome.app" ]; then
+            /usr/bin/open -na "Google Chrome" --args --app="$URL"
+          else
+            /usr/bin/open "$URL"
+          fi
+          SCRIPT
+
+          chmod +x "$APP/Contents/MacOS/CommandOS"
+          ditto -c -k --keepParent "$APP" "dist/CommandOS.zip"
 
       - name: Upload app artifact
         uses: actions/upload-artifact@v4
         with:
           name: CommandOS-mac
-          path: |
-            dist/*.dmg
-            dist/*.zip
+          path: dist/CommandOS.zip
